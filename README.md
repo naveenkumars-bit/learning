@@ -32,13 +32,19 @@ Install all required Node.js packages (Express server, Cypress, Newman, and Goog
 npm install
 ```
 
-### 3. Configure LLM Copilot (Optional)
-The Test Copilot tab uses the **Gemini 2.5 Flash** model to generate Gherkin scenarios, edge cases, and Cypress specs.
-* **To enable live Gemini generations**: Create a file named `.env` in the root folder and add your key:
-  ```env
-  GEMINI_API_KEY=your_actual_gemini_api_token_here
-  ```
-* **Offline/Mock Mode**: If no `.env` file or key is supplied, the Copilot automatically runs in **simulation mode**, matching keywords (login, profile, tasks) to return realistic E2E assets. No token setup is strictly required to explore the platform.
+### 3. Configure Environment Variables
+Copy the template `.env.example` file in the root folder to `.env`:
+```bash
+cp .env.example .env
+```
+
+Open the newly created `.env` file to customize the configurations:
+* **`GEMINI_API_KEY`**: Your Gemini Developer API Key (generated in Google AI Studio) to enable live LLM generations. If omitted, the Copilot runs in offline simulation mode.
+* **`GEMINI_MODEL`**: Selects the target Gemini model (e.g., `gemini-2.5-flash` or `gemini-2.5-pro`). Defaults to `gemini-2.5-flash`.
+* **`MOCK_DELAY_MS`**: Simulated response delay in milliseconds for the offline Copilot mock generator (defaults to `800ms`).
+* **`PORT`**: Port where the SUT backend server listens (defaults to `3000`).
+* **`NEWMAN_BASE_URL`**: Overrides target base URL for Postman/Newman API validation tests (defaults to `http://localhost:3000`).
+* **`CYPRESS_baseUrl`**: Overrides base URL for Cypress E2E UI automation runs (defaults to `http://localhost:3000`).
 
 ---
 

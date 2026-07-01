@@ -490,7 +490,8 @@ app.post('/api/copilot/generate', async (req, res) => {
     console.log(`[Copilot] GEMINI_API_KEY environment variable is missing. Running in mock/simulation mode.`);
     const mockOutput = generateMockResponse(prompt, mode);
     // Add small delay to feel realistic
-    await new Promise(resolve => setTimeout(resolve, 800));
+    const delay = parseInt(process.env.MOCK_DELAY_MS || '800', 10);
+    await new Promise(resolve => setTimeout(resolve, delay));
     return res.json({
       success: true,
       provider: 'mock-simulation',
@@ -502,17 +503,18 @@ app.post('/api/copilot/generate', async (req, res) => {
     const { GoogleGenAI } = require('@google/genai');
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     
-    console.log(`[Copilot] Calling Gemini API for mode: ${mode}`);
+    const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    console.log(`[Copilot] Calling Gemini API (${modelName}) for mode: ${mode}`);
     const apiPrompt = `${systemInstruction}\n\nUser Feature Description:\n"${prompt}"`;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: modelName,
       contents: apiPrompt,
     });
 
     return res.json({
       success: true,
-      provider: 'gemini-2.5-flash',
+      provider: modelName,
       data: response.text
     });
   } catch (error) {

@@ -1,6 +1,10 @@
 const newman = require('newman');
 const path = require('path');
 const fs = require('fs');
+const dotenv = require('dotenv');
+
+// Load environment variables
+dotenv.config();
 
 // Ensure reports directory exists
 const reportsDir = path.join(__dirname, 'reports');
@@ -20,6 +24,9 @@ console.log('==================================================\n');
 newman.run({
   collection: collectionPath,
   environment: environmentPath,
+  envVar: [
+    { key: 'baseUrl', value: process.env.NEWMAN_BASE_URL || 'http://localhost:3000' }
+  ],
   reporters: ['cli', 'htmlextra'],
   reporter: {
     htmlextra: {

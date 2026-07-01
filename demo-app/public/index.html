@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Augmented QA Workspace & Copilot</title>
+  <!-- Google Fonts for modern typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- CSS Styling -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Toast Notification System -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Main Grid Layout -->
+  <div class="app-container">
+    
+    <!-- Top Header Navigation Bar -->
+    <header class="main-header">
+      <div class="logo-area">
+        <span class="logo-icon">⚡</span>
+        <h1>AI-QA <span class="accent-text">Copilot</span> Workspace</h1>
+      </div>
+      <nav class="nav-links">
+        <button class="nav-btn active" id="tab-login" data-target="view-login">🔑 Login SUT</button>
+        <button class="nav-btn" id="tab-profile" data-target="view-profile" style="display: none;">👤 Edit Profile</button>
+        <button class="nav-btn" id="tab-tasks" data-target="view-tasks" style="display: none;">📋 Tasks Kanban</button>
+        <button class="nav-btn" id="tab-copilot" data-target="view-copilot">🤖 AI Copilot</button>
+      </nav>
+      <div class="user-status" id="header-user-status">
+        <span class="status-dot offline"></span>
+        <span id="header-username">Not Authenticated</span>
+      </div>
+    </header>
+
+    <!-- Content Workspace -->
+    <main class="content-workspace">
+
+      <!-- ================= VIEW 1: LOGIN ================= -->
+      <section id="view-login" class="workspace-view active">
+        <div class="login-card-container">
+          <div class="login-card">
+            <h2>Welcome to SUT</h2>
+            <p class="subtitle">Log in to unlock photo crop and task management automation features</p>
+            
+            <form id="login-form">
+              <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter username (e.g. admin)" required autocomplete="username">
+              </div>
+              <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password (e.g. password123)" required autocomplete="current-password">
+              </div>
+              <button type="submit" id="login-btn" class="primary-btn">Sign In to Application</button>
+            </form>
+            
+            <div class="credentials-tip">
+              <strong>QA Credentials:</strong> admin / password123
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW 2: PROFILE PHOTO CROP ================= -->
+      <section id="view-profile" class="workspace-view">
+        <div class="profile-container">
+          <div class="profile-grid">
+            
+            <!-- Left Side: Profile Information Card -->
+            <div class="glass-card profile-details-card">
+              <h3>Profile Information</h3>
+              <div class="avatar-display-section">
+                <img id="profile-avatar-preview" src="/uploads/default-avatar.png" alt="Avatar Preview" class="large-avatar">
+                <div class="avatar-badge">User</div>
+              </div>
+              
+              <div class="info-list">
+                <div class="info-item">
+                  <span class="label">Username:</span>
+                  <span id="profile-username-text" class="val">QA_Engineer</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">Email:</span>
+                  <span id="profile-email-text" class="val">qa@company.com</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side: Photo Upload & Cropping Interactive Editor -->
+            <div class="glass-card editor-card">
+              <h3>Profile Photo Canvas Editor</h3>
+              <p class="card-desc">Drag & drop or select an image, zoom and adjust crop area, then save.</p>
+              
+              <div class="upload-dropzone" id="upload-dropzone">
+                <input type="file" id="file-upload-input" accept="image/*" class="file-input">
+                <div class="dropzone-prompt">
+                  <span class="upload-icon">📷</span>
+                  <p>Drag & Drop your photo here or <span class="browse-link">Browse Files</span></p>
+                  <p class="file-limits">JPEG, PNG, WEBP up to 5MB</p>
+                </div>
+              </div>
+
+              <!-- Interactive Canvas Area -->
+              <div class="canvas-wrapper" id="canvas-wrapper" style="display: none;">
+                <div class="canvas-container">
+                  <canvas id="crop-canvas" width="400" height="300"></canvas>
+                  <div class="crop-overlay-instructions">Use slider to zoom / click-drag inside canvas to move image</div>
+                </div>
+                
+                <div class="crop-controls">
+                  <div class="control-row">
+                    <label for="zoom-slider">Zoom:</label>
+                    <input type="range" id="zoom-slider" min="0.5" max="3" step="0.05" value="1.0">
+                    <span id="zoom-value">1.0x</span>
+                  </div>
+                  <div class="control-actions">
+                    <button id="btn-crop-reset" class="secondary-btn">Reset Layout</button>
+                    <button id="save-profile-btn" class="primary-btn">Save Profile Photo</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW 3: TASKS KANBAN ================= -->
+      <section id="view-tasks" class="workspace-view">
+        <div class="tasks-container">
+          <div class="tasks-header">
+            <div>
+              <h3>Tasks Kanban Board</h3>
+              <p class="subtitle">Add, drag, progress, and complete development and validation tasks</p>
+            </div>
+            <button id="add-task-btn" class="primary-btn">+ Add Custom Task</button>
+          </div>
+
+          <!-- Task Columns -->
+          <div class="kanban-board">
+            
+            <!-- Column 1: TODO -->
+            <div class="kanban-col">
+              <div class="col-header todo">
+                <h4>To Do</h4>
+                <span class="col-count" id="count-todo">0</span>
+              </div>
+              <div class="task-list" id="list-todo" data-status="todo">
+                <!-- Dynamic Task Cards -->
+              </div>
+            </div>
+
+            <!-- Column 2: IN PROGRESS -->
+            <div class="kanban-col">
+              <div class="col-header in-progress">
+                <h4>In Progress</h4>
+                <span class="col-count" id="count-in-progress">0</span>
+              </div>
+              <div class="task-list" id="list-in-progress" data-status="in-progress">
+                <!-- Dynamic Task Cards -->
+              </div>
+            </div>
+
+            <!-- Column 3: DONE -->
+            <div class="kanban-col">
+              <div class="col-header done">
+                <h4>Done</h4>
+                <span class="col-count" id="count-done">0</span>
+              </div>
+              <div class="task-list" id="list-done" data-status="done">
+                <!-- Dynamic Task Cards -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Task Creation Dialog (Modal Overlay) -->
+        <div class="modal-overlay" id="task-modal" style="display: none;">
+          <div class="modal-card">
+            <h4>Create Board Task</h4>
+            <form id="task-form">
+              <div class="input-group">
+                <label for="task-title-input">Task Title</label>
+                <input type="text" id="task-title-input" placeholder="e.g. Automate profile tests" required>
+              </div>
+              <div class="input-group">
+                <label for="task-desc-input">Description</label>
+                <textarea id="task-desc-input" rows="3" placeholder="Explain validation or dev steps..."></textarea>
+              </div>
+              <div class="modal-actions">
+                <button type="button" id="btn-close-modal" class="secondary-btn">Cancel</button>
+                <button type="submit" id="save-task-btn" class="primary-btn">Save Task</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW 4: AI COPILOT WORKSPACE ================= -->
+      <section id="view-copilot" class="workspace-view">
+        <div class="copilot-container">
+          
+          <!-- Left Panel: Inputs -->
+          <div class="glass-card copilot-input-panel">
+            <h3>Test Planning Copilot</h3>
+            <p class="subtitle">Accelerate QA by using AI to generate Gherkin scenarios, edge cases, and Cypress specs.</p>
+            
+            <div class="copilot-prompts-templates">
+              <span class="label">Templates:</span>
+              <button class="template-pill" data-desc="User can upload a profile photo, crop it, and save it to update their avatar">Photo Crop</button>
+              <button class="template-pill" data-desc="User can login with valid credentials, session token is stored, and they are redirected to dashboard">Login Flow</button>
+              <button class="template-pill" data-desc="User can create a task, move its status on the board, and delete the task successfully">Tasks Board</button>
+            </div>
+
+            <div class="input-group">
+              <label for="copilot-input-description">Feature Description</label>
+              <textarea id="copilot-input-description" rows="8" placeholder="Type a feature description here... e.g. User can check out with a credit card, validation checks for expiry, and gets receipt."></textarea>
+            </div>
+
+            <div class="copilot-modes-selectors">
+              <label class="radio-label">
+                <input type="radio" name="copilot-mode" value="gherkin" checked>
+                <span>🥒 Gherkin BDD Plan</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="copilot-mode" value="edge_cases">
+                <span>⚠️ E2E Edge Cases</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="copilot-mode" value="cypress">
+                <span>🌲 Cypress TS Spec</span>
+              </label>
+            </div>
+
+            <button id="btn-copilot-generate" class="primary-btn generate-btn">
+              <span class="btn-spinner" id="generate-spinner" style="display: none;">🌀</span>
+              <span id="generate-btn-text">Generate AI Assets</span>
+            </button>
+          </div>
+
+          <!-- Right Panel: Output Showcase -->
+          <div class="glass-card copilot-output-panel">
+            <div class="output-header">
+              <h3>Generated Deliverables</h3>
+              <div class="output-actions">
+                <button id="btn-output-copy" class="action-btn">📋 Copy Code</button>
+                <button id="btn-output-download" class="action-btn">💾 Save Asset</button>
+              </div>
+            </div>
+            
+            <div class="output-container">
+              <div class="provider-badge" id="output-provider-badge">Ready</div>
+              <pre><code id="copilot-output-code">Enter a feature description and click generate to populate the LLM-powered test planning results...</code></pre>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer Status info -->
+    <footer class="main-footer">
+      <div>AI-Augmented QA Copilot Framework - Cypress TS & Newman Automation Demo</div>
+      <div id="api-key-status">LLM Hook: Checking connection...</div>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

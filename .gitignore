@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Local Environment Variables
+.env
+.env.local
+
+# Cypress Outputs
+cypress/screenshots/
+cypress/videos/
+
+# Newman Reports
+postman/reports/
+
+# Uploaded Assets (SUT)
+demo-app/public/uploads/profile-*
+
+# IDE & OS files
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

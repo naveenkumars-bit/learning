@@ -1,67 +1,88 @@
 # AI-Augmented QA & Test Planning Copilot Workspace
 
-This workspace demonstrates a modern shift-left AI-Augmented QA framework incorporating an interactive web SUT (System Under Test), a Cypress TypeScript E2E suite, Postman validation scripts executed via Newman, and a built-in Gemini LLM Test Planning Copilot.
+This repository contains a modern, shift-left AI-Augmented QA platform containing an interactive web application (System Under Test), a Cypress TypeScript E2E test suite, a Postman API collection run via Newman, and a built-in Gemini LLM Test Planning Copilot.
+
+Use the instructions below to set up and run this project on any system.
 
 ---
 
-## ⚡ Framework Architecture
+## 🛠️ Prerequisites
 
+Before running the project, make sure the target system has the following installed:
+* **Node.js** (v18.x or higher recommended)
+* **Git** (for version control)
+* **Web Browser** (Google Chrome or Electron for Cypress testing)
+
+---
+
+## ⚙️ Setup Instructions
+
+Follow these step-by-step commands to clone and initialize the workspace:
+
+### 1. Clone the repository
+Open your terminal and run:
+```bash
+git clone https://github.com/naveenkumars-bit/learning.git
+cd learning
 ```
-                       ┌───────────────────────────┐
-                       │   System Under Test (SUT) │
-                       │    (Express Port 3000)    │
-                       └─────────────┬─────────────┘
-                                     │
-             ┌───────────────────────┼───────────────────────┐
-             ▼                       ▼                       ▼
-┌─────────────────────────┐ ┌─────────────────┐ ┌─────────────────────────┐
-│  AI Test Copilot UI     │ │  Cypress E2E    │ │  Newman REST API        │
-│  (Gherkin, Edge Cases)  │ │  (TypeScript)   │ │  (Postman Runner)       │
-└─────────────────────────┘ └─────────────────┘ └─────────────────────────┘
+
+### 2. Install dependencies
+Install all required Node.js packages (Express server, Cypress, Newman, and Google GenAI SDK):
+```bash
+npm install
 ```
 
----
-
-## 🚀 Key Features Under Test
-
-1. **Authentication (SUT Login)**: Sleek glassmorphic card credentials checking with validation toast alerts.
-2. **Profile Photo Canvas Editor**: Interactive crop canvas with drag-to-pan, range slider zoom, and relative coordinate save triggers.
-3. **Tasks Kanban Board**: CRUD database integration displaying card columns, status changes, and card deletes.
-4. **AI QA Copilot Sandbox**: Dynamic test suite planning playground converting description prompts into Given-When-Then Gherkin, boundary Edge Cases, or Cypress TypeScript spec scaffolds.
-
----
-
-## 📁 Repository Map
-
-* `cypress/e2e/`: TypeScript specs checking auth, profile upload, and Kanban CRUD.
-* `demo-app/`: Express application serve script and static HTML/CSS/JS frontend.
-* `postman/`: Postman collection JSON & the programmatic Newman report generator script.
-* `prompts/`: Standard prompt templates for team QA BDD generations.
-* `docs/`: In-depth [AI QA Workflow Guide](docs/ai_qa_workflow_guide.md) and [Test Strategy Document](docs/test_strategy.md).
+### 3. Configure LLM Copilot (Optional)
+The Test Copilot tab uses the **Gemini 2.5 Flash** model to generate Gherkin scenarios, edge cases, and Cypress specs.
+* **To enable live Gemini generations**: Create a file named `.env` in the root folder and add your key:
+  ```env
+  GEMINI_API_KEY=your_actual_gemini_api_token_here
+  ```
+* **Offline/Mock Mode**: If no `.env` file or key is supplied, the Copilot automatically runs in **simulation mode**, matching keywords (login, profile, tasks) to return realistic E2E assets. No token setup is strictly required to explore the platform.
 
 ---
 
-## 🛠️ Step-by-Step Run Commands
+## 🚀 Running the Project
 
-### 1. Boot local server
-Starts backend listening on `http://localhost:3000`:
+The verification workspace consists of three tasks: starting the server, running Newman API scripts, and running Cypress E2E scripts.
+
+### Step 1: Start the SUT Server
+First, boot the local web application server. This hosts the frontend and the mock backend REST endpoints:
 ```bash
 npm start
 ```
+* **Local Web Interface**: Access the application at `http://localhost:3000`
 
-### 2. Execute E2E Tests (Cypress)
-Run Cypress tests headlessly in the terminal:
-```bash
-npx cypress run
-```
-Or open the interactive dashboard:
-```bash
-npx cypress open
-```
+---
 
-### 3. Execute API Tests (Newman)
-Run REST collection checks and compile HTML dashboards:
+### Step 2: Execute API Tests (Newman)
+With the server running, open a new terminal window/tab and execute the Postman collections programmatically:
 ```bash
 npm run test:api
 ```
-Reports are output to `postman/reports/newman-api-report.html`.
+* **Automation Reports**: Once completed, a premium HTML report is generated at:
+  `postman/reports/newman-api-report.html`
+
+---
+
+### Step 3: Execute E2E UI Tests (Cypress)
+Run the Cypress TypeScript E2E spec suite.
+
+* **To run all specs headlessly in the terminal**:
+  ```bash
+  npx cypress run
+  ```
+* **To open the interactive Cypress Test Runner**:
+  ```bash
+  npx cypress open
+  ```
+
+---
+
+## 📁 Key Project Components
+
+* `cypress/e2e/`: Automated TS specs testing Login, Profile uploading + Canvas cropping, and Tasks Kanban CRUD.
+* `demo-app/server.js`: Express REST API endpoints and Copilot LLM proxy routing.
+* `postman/collections/`: Postman endpoints payload and environment settings.
+* `prompts/copilot_prompts.json`: Reusable prompt templates used for AI QA generation workflows.
+* `docs/`: Holds the [AI QA Workflow Guide](docs/ai_qa_workflow_guide.md) and [Test Strategy Document](docs/test_strategy.md).
